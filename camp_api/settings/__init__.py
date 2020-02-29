@@ -126,6 +126,7 @@ STATIC_URL = '/static/'
 
 # REST Framework settings
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -133,12 +134,14 @@ REST_FRAMEWORK = {
     )
 }
 
+APPEND_SLASH = False
+
 # Authentication
 AUTH_USER_MODEL = 'authentication.User'
 
 # SimpleJWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=100),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
     'ALGORITHM': 'HS256',
     'AUTH_HEADER_TYPES': ('Bearer', 'JWT',),
