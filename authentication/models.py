@@ -75,5 +75,6 @@ class User(AbstractUser):
             'unique': _("A user with that email already exists."),
         }
     )
+    phone_number = models.CharField(max_length=128, null=True)
     REQUIRED_FIELDS = []
     objects = UserManager()
