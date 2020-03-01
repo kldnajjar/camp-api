@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django_utils.choices import Choices, Choice
 
-from camp.models import TentType, Activity, Food, MealType
+from camp.models import TentType, Activity, Food, MealType, Tent
 from utils.models import TypesBase
 
 
@@ -40,8 +40,11 @@ class Reservation(models.Model):
         booked = Choice('booked', _('Booked'))
         confirmed = Choice('confirmed', _('Confirmed'))
         cancelled = Choice('cancelled', _('Cancelled'))
-    # TODO : Alter the on_delete logic with a custom method to check for status.
-    reserved_by = models.ForeignKey(Reservor, on_delete=models.CASCADE)
+    reserved_by = models.ForeignKey(
+        Reservor,
+        on_delete=models.SET_NULL,
+        null=True
+    )
     reservation_type = models.ForeignKey(ReservationType, on_delete=models.PROTECT)
     status = models.CharField(
         choices=STATUS.choices,
@@ -69,7 +72,11 @@ class Reservation(models.Model):
 
 
 class StayReservation(Reservation):
-    tent_type = models.ForeignKey(TentType, on_delete=models.PROTECT)
+    tent = models.ForeignKey(
+        Tent,
+        on_delete=models.SET_NULL,
+        null=True
+    )
     stay_type = models.ForeignKey(
         StayType,
         on_delete=models.PROTECT

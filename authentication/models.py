@@ -1,6 +1,6 @@
 from django.contrib import auth
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -15,10 +15,28 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
+        role = extra_fields.pop('role', None)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save(using=self._db)
+        if role:
+            self._check_if_role_exists(role)
+            user.save(using=self._db)
+            self._add_user_to_group(user, role)
+        else:
+            user.save(using=self._db)
         return user
+
+    def _check_if_role_exists(self, role):
+        if not Group.objects.using(self._db).filter(name=role).exists():
+            roles = list(Group.objects.using(self._db).all().values_list('name', flat=True))
+            raise ValueError(f"""
+                The given role ({role}) does not exist.
+                Available roles are {roles}
+            """)
+
+    def _add_user_to_group(self, user, group_name):
+        group = Group.objects.using(self._db).filter(name=group_name).first()
+        user.groups.add(group)
 
     def create_user(self, email, password=None, **extra_fields):
         """Create and save a regular User with the given email and password."""
@@ -77,4 +95,5 @@ class User(AbstractUser):
     )
     phone_number = models.CharField(max_length=128, null=True)
     REQUIRED_FIELDS = []
+    NORMAL_USER_REQUIRED_FIELDS = ['first_name', 'last_name']
     objects = UserManager()
