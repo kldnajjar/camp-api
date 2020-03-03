@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django_utils.choices import Choices, Choice
 
-from camp.models import TentType, Activity, Food, MealType, Tent
+from camp.models import Activity, Food, MealType, Tent
 from utils.models import TypesBase
 
 
@@ -40,6 +40,7 @@ class Reservation(models.Model):
         booked = Choice('booked', _('Booked'))
         confirmed = Choice('confirmed', _('Confirmed'))
         cancelled = Choice('cancelled', _('Cancelled'))
+
     reserved_by = models.ForeignKey(
         Reservor,
         on_delete=models.SET_NULL,
@@ -64,6 +65,7 @@ class Reservation(models.Model):
         decimal_places=2
     )
     notes = models.TextField(null=True, blank=True)
+    reservation_number = models.CharField(max_length=50, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
