@@ -63,7 +63,7 @@ class Reservation(models.Model):
         max_digits=20,
         decimal_places=2
     )
-    notes = models.TextField()
+    notes = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -95,3 +95,4 @@ class FoodReservation(Reservation):
         Food,
         related_query_name='reservations'
     )
+    reservation_date = models.DateField()

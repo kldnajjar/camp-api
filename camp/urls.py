@@ -5,7 +5,7 @@ from camp.api import TentTypeModelViewSet, FoodModelViewSet, \
 
 router = SimpleRouter()
 router.register("tent_types", TentTypeModelViewSet)
-router.register("foods", FoodModelViewSet)
+router.register("food", FoodModelViewSet)
 router.register("meal_types", MealTypeModelViewSet)
 router.register("activities", ActivityModelViewSet)
 router.register("tents", TentModelViewSet)
