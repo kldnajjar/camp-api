@@ -1,10 +1,15 @@
+anyjson==0.3.3
 asgiref==3.2.3
+Babel==2.8.0
 Django==3.0.3
 django-cors-headers==3.2.1
 django-extensions==2.2.8
+django-utils2==2.6.0
 djangorestframework==3.11.0
 djangorestframework-simplejwt==4.4.0
+phonenumberslite==8.11.4
 PyJWT==1.7.1
+python-utils==2.3.0
 pytz==2019.3
 six==1.14.0
 sqlparse==0.3.0
