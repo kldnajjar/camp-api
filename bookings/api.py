@@ -5,6 +5,7 @@ from bookings.filters import CompanyFilter, StayTypeFilter
 from bookings.models import FoodReservation, StayReservation, StayType, Company
 from bookings.serializers import FoodReservationSerializer, \
     StayReservationSerializer, CompanySerializer, StayTypeSerializer
+from utils.viewsets import ArchivableMixin
 
 
 class StayTypeModelViewSet(ModelViewSet):
@@ -12,9 +13,10 @@ class StayTypeModelViewSet(ModelViewSet):
     serializer_class = StayTypeSerializer
     permission_classes = (DjangoModelPermissions,)
     filterset_class = StayTypeFilter
+    ordering_fields = ['name', 'disabled']
 
 
-class CompanyModelViewSet(ModelViewSet):
+class CompanyModelViewSet(ArchivableMixin, ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
     permission_classes = (DjangoModelPermissions,)

@@ -15,6 +15,7 @@ class Company(models.Model):
     name = models.CharField(max_length=128)
     phone_number = models.CharField(max_length=128)
     email = models.EmailField(unique=True)
+    archived = models.BooleanField(null=False, default=False)
 
 
 class Reservation(models.Model):

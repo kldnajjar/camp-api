@@ -8,7 +8,7 @@ class TentTypeFilter(filters.FilterSet):
 
     class Meta:
         model = TentType
-        fields = ['id', 'name', 'archived']
+        fields = ['id', 'name', 'archived', 'disabled']
 
 
 class FoodFilter(filters.FilterSet):
@@ -16,7 +16,7 @@ class FoodFilter(filters.FilterSet):
 
     class Meta:
         model = Food
-        fields = ['id', 'name', 'archived']
+        fields = ['id', 'name', 'archived', 'disabled']
 
 
 class MealTypeFilter(filters.FilterSet):
@@ -24,21 +24,19 @@ class MealTypeFilter(filters.FilterSet):
 
     class Meta:
         model = MealType
-        fields = ['id', 'name', 'archived']
+        fields = ['id', 'name', 'archived', 'disabled']
 
 
 class ActivityFilter(filters.FilterSet):
     name = filters.CharFilter('name', 'contains')
-    archived = filters.BooleanFilter('archived')
 
     class Meta:
         model = Activity
-        fields = ['id', 'name', 'archived']
+        fields = ['id', 'name', 'archived', 'disabled']
 
 
 class TentFilter(filters.FilterSet):
     name = filters.CharFilter('name', 'contains')
-    archived = filters.BooleanFilter('archived')
 
     class Meta:
         model = Tent

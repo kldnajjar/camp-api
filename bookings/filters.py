@@ -8,7 +8,7 @@ class CompanyFilter(filters.FilterSet):
 
     class Meta:
         model = Company
-        fields = ['name', 'email', 'phone_number']
+        fields = ['name', 'email', 'phone_number', 'archived']
 
 
 class StayTypeFilter(filters.FilterSet):
@@ -16,4 +16,4 @@ class StayTypeFilter(filters.FilterSet):
 
     class Meta:
         model = StayType
-        fields = ['name', 'archived']
+        fields = ['name', 'archived', 'disabled']

@@ -13,6 +13,7 @@ class TentTypeModelViewSet(ArchivableMixin, ModelViewSet):
     permission_classes = (DjangoModelPermissions,)
     queryset = TentType.objects.all()
     filterset_class = TentTypeFilter
+    ordering_fields = ['name', 'disabled']
 
 
 class FoodModelViewSet(ArchivableMixin, ModelViewSet):
@@ -20,6 +21,7 @@ class FoodModelViewSet(ArchivableMixin, ModelViewSet):
     permission_classes = (DjangoModelPermissions,)
     queryset = Food.objects.all()
     filterset_class = FoodFilter
+    ordering_fields = ['name', 'disabled']
 
 
 class MealTypeModelViewSet(ArchivableMixin, ModelViewSet):
@@ -27,6 +29,7 @@ class MealTypeModelViewSet(ArchivableMixin, ModelViewSet):
     permission_classes = (DjangoModelPermissions,)
     queryset = MealType.objects.all()
     filterset_class = MealTypeFilter
+    ordering_fields = ['name', 'disabled']
 
 
 class ActivityModelViewSet(ArchivableMixin, ModelViewSet):
@@ -34,6 +37,7 @@ class ActivityModelViewSet(ArchivableMixin, ModelViewSet):
     permission_classes = (DjangoModelPermissions,)
     queryset = Activity.objects.all()
     filterset_class = ActivityFilter
+    ordering_fields = ['name', 'disabled']
 
 
 class TentModelViewSet(ArchivableMixin, ModelViewSet):
@@ -41,7 +45,9 @@ class TentModelViewSet(ArchivableMixin, ModelViewSet):
     permission_classes = (DjangoModelPermissions,)
     queryset = Tent.objects.all()
     filterset_class = TentFilter
+    ordering_fields = ['name']
 
 # TODO
 # 4. Filtering for all APIs.
+# 5. Ordering for all APIs.
 # 8. Daily Cash
