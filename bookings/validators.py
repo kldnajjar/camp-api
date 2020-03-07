@@ -55,7 +55,7 @@ class StayReservationValidator:
         ).exists()
         if is_reserved:
             raise ValidationError({
-                'tent': _("Tent is reserved in the specified date range.")
+                'tent_id': _("Tent is reserved in the specified date range.")
             })
 
     def _check_reservation_number_if_company(self, res_type, company_id, reservation_number):

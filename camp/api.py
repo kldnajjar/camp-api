@@ -11,7 +11,6 @@ class TentTypeModelViewSet(ArchivableMixin, ModelViewSet):
     serializer_class = TentTypeSerializer
     permission_classes = (DjangoModelPermissions,)
     queryset = TentType.objects.all()
-    pagination_class = None
 
 
 class FoodModelViewSet(ArchivableMixin, ModelViewSet):
@@ -24,14 +23,12 @@ class MealTypeModelViewSet(ArchivableMixin, ModelViewSet):
     serializer_class = MealTypeSerializer
     permission_classes = (DjangoModelPermissions,)
     queryset = MealType.objects.all()
-    pagination_class = None
 
 
 class ActivityModelViewSet(ArchivableMixin, ModelViewSet):
     serializer_class = ActivitySerializer
     permission_classes = (DjangoModelPermissions,)
     queryset = Activity.objects.all()
-    pagination_class = None
 
 
 class TentModelViewSet(ArchivableMixin, ModelViewSet):
@@ -40,6 +37,5 @@ class TentModelViewSet(ArchivableMixin, ModelViewSet):
     queryset = Tent.objects.all()
 
 # TODO
-# 2. Make Validation Error with a single format.
-# 3. Make Pagination single format.
+# 4. Filtering for all APIs.
 # 8. Daily Cash

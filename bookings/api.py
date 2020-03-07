@@ -10,7 +10,6 @@ class StayTypeModelViewSet(ModelViewSet):
     queryset = StayType.objects.all()
     serializer_class = StayTypeSerializer
     permission_classes = (DjangoModelPermissions,)
-    pagination_class = None
 
 
 class CompanyModelViewSet(ModelViewSet):
