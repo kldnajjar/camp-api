@@ -1,15 +1,9 @@
 from rest_framework import serializers
 
-from bookings.models import ReservationType, StayType, Reservor, StayReservation, FoodReservation
+from bookings.models import StayType, StayReservation, FoodReservation, Company, Reservation
 from bookings.validators import StayReservationValidator, FoodReservationValidator
 from camp.models import Tent, Activity, MealType, Food
 from camp.serializers import TentSerializer
-
-
-class ReservationTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReservationType
-        fields = '__all__'
 
 
 class StayTypeSerializer(serializers.ModelSerializer):
@@ -18,23 +12,23 @@ class StayTypeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ReservorSerializer(serializers.ModelSerializer):
+class CompanySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Reservor
+        model = Company
         fields = '__all__'
 
 
 # noinspection PyMethodMayBeStatic
 class StayReservationSerializer(serializers.ModelSerializer):
-    tent = serializers.PrimaryKeyRelatedField(
+    tent_id = serializers.PrimaryKeyRelatedField(
+        source='tent',
         required=True,
         write_only=True,
         queryset=Tent.objects.all()
     )
-    related_tent = TentSerializer(
+    tent = TentSerializer(
         many=False,
         read_only=True,
-        source='tent'
     )
     activities_ids = serializers.PrimaryKeyRelatedField(
         source='activities',
@@ -52,14 +46,15 @@ class StayReservationSerializer(serializers.ModelSerializer):
         decimal_places=2,
         min_value=1
     )
-    reserved_by = ReservorSerializer(
+    company = CompanySerializer(
         many=False,
         read_only=True
     )
-    reserved_by_id = serializers.PrimaryKeyRelatedField(
-        source='reserved_by',
-        queryset=Reservor.objects.all(),
-        write_only=True
+    company_id = serializers.PrimaryKeyRelatedField(
+        source='company',
+        queryset=Company.objects.all(),
+        write_only=True,
+        required=False
     )
     stay_type_id = serializers.PrimaryKeyRelatedField(
         source='stay_type',
@@ -70,14 +65,8 @@ class StayReservationSerializer(serializers.ModelSerializer):
         source='stay_type.name',
         read_only=True
     )
-    reservation_type_id = serializers.PrimaryKeyRelatedField(
-        source='reservation_type',
-        write_only=True,
-        queryset=ReservationType.objects.all()
-    )
-    reservation_type = serializers.CharField(
-        source='reservation_type.name',
-        read_only=True
+    reservation_type = serializers.ChoiceField(
+        choices=Reservation.TYPE.choices
     )
 
     def get_activities_names(self, instance):
@@ -100,15 +89,7 @@ class FoodReservationSerializer(serializers.ModelSerializer):
         decimal_places=2,
         min_value=1
     )
-    reservation_type_id = serializers.PrimaryKeyRelatedField(
-        source='reservation_type',
-        write_only=True,
-        queryset=ReservationType.objects.all()
-    )
-    reservation_type = serializers.CharField(
-        source='reservation_type.name',
-        read_only=True
-    )
+    reservation_type = serializers.CharField()
     meal_type = serializers.CharField(
         source='meal_type.name',
         read_only=True

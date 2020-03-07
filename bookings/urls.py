@@ -1,14 +1,12 @@
 from rest_framework.routers import SimpleRouter
 
-from bookings.api import FoodReservationModelViewSet, \
-    StayReservationModelViewSet, ReservorModelViewSet, StayTypeModelViewSet, \
-    ReservationTypeModelViewSet
+from bookings.api import FoodReservationModelViewSet, StayReservationModelViewSet, \
+    CompanyModelViewSet, StayTypeModelViewSet
 
 router = SimpleRouter()
 
-router.register("reservation_types", ReservationTypeModelViewSet)
 router.register("stay_types", StayTypeModelViewSet)
-router.register("reservors", ReservorModelViewSet)
+router.register("companies", CompanyModelViewSet)
 router.register("stay_reservations", StayReservationModelViewSet)
 router.register("food_reservations", FoodReservationModelViewSet)
 urlpatterns = []

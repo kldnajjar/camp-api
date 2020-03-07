@@ -1,18 +1,9 @@
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.viewsets import ModelViewSet
 
-from bookings.models import FoodReservation, StayReservation, Reservor, \
-    StayType, ReservationType
+from bookings.models import FoodReservation, StayReservation, StayType, Company
 from bookings.serializers import FoodReservationSerializer, \
-    StayReservationSerializer, ReservorSerializer, StayTypeSerializer, \
-    ReservationTypeSerializer
-
-
-class ReservationTypeModelViewSet(ModelViewSet):
-    queryset = ReservationType.objects.all()
-    serializer_class = ReservationTypeSerializer
-    permission_classes = (DjangoModelPermissions,)
-    pagination_class = None
+    StayReservationSerializer, CompanySerializer, StayTypeSerializer
 
 
 class StayTypeModelViewSet(ModelViewSet):
@@ -22,9 +13,9 @@ class StayTypeModelViewSet(ModelViewSet):
     pagination_class = None
 
 
-class ReservorModelViewSet(ModelViewSet):
-    queryset = Reservor.objects.all()
-    serializer_class = ReservorSerializer
+class CompanyModelViewSet(ModelViewSet):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
     permission_classes = (DjangoModelPermissions,)
 
 

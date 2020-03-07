@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.exceptions import ValidationError
 
-from bookings.models import StayReservation
+from bookings.models import StayReservation, Reservation
 from utils.helpers import date_in_the_past
 
 
@@ -17,12 +17,14 @@ class StayReservationValidator:
         date_from = value['reserved_from']
         date_to = value['reserved_to']
         res_type = value['reservation_type']
+        company = value.get('company', None)
+        company_id = company.id if company else None
         res_number = value.get('reservation_number', None)
         self._check_tent_capacity(tent, value['guests_count'])
         self._check_reservation_dates_are_not_in_the_past(date_from, date_to)
         self._reservation_dates_are_not_valid(date_from, date_to)
         self._tent_is_reserved_in_date_range(tent, date_from, date_to)
-        self._check_reservation_number_if_company(res_type, res_number)
+        self._check_reservation_number_if_company(res_type, company_id, res_number)
 
     def _check_tent_capacity(self, tent, guests_count):
         if tent.capacity < guests_count:
@@ -56,11 +58,14 @@ class StayReservationValidator:
                 'tent': _("Tent is reserved in the specified date range.")
             })
 
-    def _check_reservation_number_if_company(self, res_type, reservation_number):
-        if res_type.name == 'Company' and not reservation_number:
-            raise ValidationError({
-                'reservation_number': _("Company reservation can't be done without a reservation number.")
-            })
+    def _check_reservation_number_if_company(self, res_type, company_id, reservation_number):
+        validation = {}
+        if res_type == Reservation.TYPE.company and not reservation_number:
+            validation['reservation_number'] = _("Company reservation can't be done without a reservation number.")
+        if res_type == Reservation.TYPE.company and not company_id:
+            validation['company_id'] = _("Company reservation can't be done without a company.")
+        if validation:
+            raise ValidationError(validation)
 
 
 # noinspection PyMethodMayBeStatic
@@ -72,8 +77,10 @@ class FoodReservationValidator:
         reservation_date = value['reservation_date']
         res_type = value['reservation_type']
         res_number = value.get('reservation_number', None)
+        company = value.get('company', None)
+        company_id = company.id if company else None
         self._check_reservation_dates_are_not_in_the_past(reservation_date)
-        self._check_reservation_number_if_company(res_type, res_number)
+        self._check_reservation_number_if_company(res_type, company_id, res_number)
 
     def _check_reservation_dates_are_not_in_the_past(self, date_from):
         validation = {}
@@ -82,10 +89,12 @@ class FoodReservationValidator:
         if validation:
             raise ValidationError(validation)
 
-    def _check_reservation_number_if_company(self, res_type, reservation_number):
-        if res_type.name == 'Company' and not reservation_number:
-            raise ValidationError({
-                'reservation_number': _("Company reservation can't be done without a reservation number.")
-            })
-
+    def _check_reservation_number_if_company(self, res_type, company_id, reservation_number):
+        validation = {}
+        if res_type == Reservation.TYPE.company and not reservation_number:
+            validation['reservation_number'] = _("Company reservation can't be done without a reservation number.")
+        if res_type == Reservation.TYPE.company and not company_id:
+            validation['company_id'] = _("Company reservation can't be done without a company.")
+        if validation:
+            raise ValidationError(validation)
 # Model Validators

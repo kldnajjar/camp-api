@@ -7,31 +7,13 @@ from camp.models import Activity, Food, MealType, Tent
 from utils.models import TypesBase
 
 
-class ReservationType(TypesBase):
-    pass
-
-
 class StayType(TypesBase):
     pass
 
 
-class Reservor(models.Model):
-    class TYPE(Choices):
-        individual = Choice('individual', _('Individual'))
-        company = Choice('company', _('Company'))
-
+class Company(models.Model):
     name = models.CharField(max_length=128)
-    number = models.CharField(max_length=20)
-    file_number = models.CharField(
-        max_length=256,
-        null=True,
-        blank=True
-    )
-    type = models.CharField(
-        choices=TYPE.choices,
-        default=TYPE.individual,
-        max_length=128
-    )
+    phone = models.CharField(max_length=128)
     email = models.EmailField(unique=True)
 
 
@@ -41,12 +23,23 @@ class Reservation(models.Model):
         confirmed = Choice('confirmed', _('Confirmed'))
         cancelled = Choice('cancelled', _('Cancelled'))
 
-    reserved_by = models.ForeignKey(
-        Reservor,
+    class TYPE(Choices):
+        individual = Choice('individual', _("Individual"))
+        company = Choice('company', _("Company"))
+
+    contact_name = models.CharField(max_length=50)
+    contact_number = models.CharField(max_length=128)
+    contact_email = models.EmailField()
+    company = models.ForeignKey(
+        Company,
         on_delete=models.SET_NULL,
         null=True
     )
-    reservation_type = models.ForeignKey(ReservationType, on_delete=models.PROTECT)
+    reservation_type = models.CharField(
+        max_length=50,
+        choices=TYPE.choices,
+        default=TYPE.individual
+    )
     status = models.CharField(
         choices=STATUS.choices,
         max_length=50,
