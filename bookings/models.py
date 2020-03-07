@@ -13,7 +13,7 @@ class StayType(TypesBase):
 
 class Company(models.Model):
     name = models.CharField(max_length=128)
-    phone = models.CharField(max_length=128)
+    phone_number = models.CharField(max_length=128)
     email = models.EmailField(unique=True)
 
 
