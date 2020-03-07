@@ -49,7 +49,8 @@ class Migration(migrations.Migration):
     dependencies = [
         ('authentication', '0003_add_groups'),
         ('camp', '0002_initial_types'),
-        ('bookings', '0003_auto_20200229_1529')
+        ('bookings', '0003_auto_20200229_1529'),
+        ('auth', '0011_update_proxy_permissions')
     ]
 
     operations = [

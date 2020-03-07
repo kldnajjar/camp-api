@@ -28,6 +28,8 @@ class ActivitySerializer(serializers.ModelSerializer):
 
 
 class TentSerializer(serializers.ModelSerializer):
+    capacity = serializers.IntegerField(min_value=1)
+
     class Meta:
         model = Tent
         fields = '__all__'

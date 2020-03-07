@@ -97,3 +97,16 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
     NORMAL_USER_REQUIRED_FIELDS = ['first_name', 'last_name']
     objects = UserManager()
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    @property
+    def role(self):
+        try:
+            role = self.groups.first().name
+        except AttributeError as _err:
+            return None
+        else:
+            return role

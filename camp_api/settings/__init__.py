@@ -142,7 +142,7 @@ AUTH_USER_MODEL = 'authentication.User'
 # SimpleJWT settings
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=100),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=10000),
     'ALGORITHM': 'HS256',
     'AUTH_HEADER_TYPES': ('Bearer', 'JWT',),
     'USER_ID_CLAIM': 'uid',
