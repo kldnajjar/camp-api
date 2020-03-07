@@ -15,6 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import SimpleRouter
+
+from camp_api.api import UserModelViewSet
+
+router = SimpleRouter()
+router.register('users', UserModelViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -22,3 +28,4 @@ urlpatterns = [
     path('', include('camp.urls')),
     path('', include('bookings.urls')),
 ]
+urlpatterns += router.urls
