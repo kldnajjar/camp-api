@@ -4,7 +4,7 @@ from camp.models import Tent, Activity, MealType, Food, TentType
 
 
 class TentTypeFilter(filters.FilterSet):
-    name = filters.CharFilter('name', 'contains')
+    name = filters.CharFilter('name', 'icontains')
 
     class Meta:
         model = TentType
@@ -12,7 +12,7 @@ class TentTypeFilter(filters.FilterSet):
 
 
 class FoodFilter(filters.FilterSet):
-    name = filters.CharFilter('name', 'contains')
+    name = filters.CharFilter('name', 'icontains')
 
     class Meta:
         model = Food
@@ -20,7 +20,7 @@ class FoodFilter(filters.FilterSet):
 
 
 class MealTypeFilter(filters.FilterSet):
-    name = filters.CharFilter('name', 'contains')
+    name = filters.CharFilter('name', 'icontains')
 
     class Meta:
         model = MealType
@@ -28,7 +28,7 @@ class MealTypeFilter(filters.FilterSet):
 
 
 class ActivityFilter(filters.FilterSet):
-    name = filters.CharFilter('name', 'contains')
+    name = filters.CharFilter('name', 'icontains')
 
     class Meta:
         model = Activity
@@ -36,7 +36,7 @@ class ActivityFilter(filters.FilterSet):
 
 
 class TentFilter(filters.FilterSet):
-    name = filters.CharFilter('name', 'contains')
+    name = filters.CharFilter('name', 'icontains')
 
     class Meta:
         model = Tent

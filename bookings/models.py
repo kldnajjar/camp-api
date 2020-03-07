@@ -84,6 +84,9 @@ class StayReservation(Reservation):
         related_query_name='reservations'
     )
 
+    class Meta(Reservation.Meta):
+        ordering = ['-reserved_from', '-created_at']
+
 
 class FoodReservation(Reservation):
     meal_type = models.ForeignKey(MealType, on_delete=models.PROTECT)

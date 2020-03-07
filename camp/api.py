@@ -13,7 +13,7 @@ class TentTypeModelViewSet(ArchivableMixin, ModelViewSet):
     permission_classes = (DjangoModelPermissions,)
     queryset = TentType.objects.all()
     filterset_class = TentTypeFilter
-    ordering_fields = ['name', 'disabled']
+    ordering_fields = ['name', 'disabled', 'archived']
 
 
 class FoodModelViewSet(ArchivableMixin, ModelViewSet):
@@ -21,7 +21,7 @@ class FoodModelViewSet(ArchivableMixin, ModelViewSet):
     permission_classes = (DjangoModelPermissions,)
     queryset = Food.objects.all()
     filterset_class = FoodFilter
-    ordering_fields = ['name', 'disabled']
+    ordering_fields = ['name', 'disabled', 'archived']
 
 
 class MealTypeModelViewSet(ArchivableMixin, ModelViewSet):
@@ -29,7 +29,7 @@ class MealTypeModelViewSet(ArchivableMixin, ModelViewSet):
     permission_classes = (DjangoModelPermissions,)
     queryset = MealType.objects.all()
     filterset_class = MealTypeFilter
-    ordering_fields = ['name', 'disabled']
+    ordering_fields = ['name', 'disabled', 'archived']
 
 
 class ActivityModelViewSet(ArchivableMixin, ModelViewSet):
@@ -37,7 +37,7 @@ class ActivityModelViewSet(ArchivableMixin, ModelViewSet):
     permission_classes = (DjangoModelPermissions,)
     queryset = Activity.objects.all()
     filterset_class = ActivityFilter
-    ordering_fields = ['name', 'disabled']
+    ordering_fields = ['name', 'disabled', 'archived']
 
 
 class TentModelViewSet(ArchivableMixin, ModelViewSet):
@@ -45,9 +45,11 @@ class TentModelViewSet(ArchivableMixin, ModelViewSet):
     permission_classes = (DjangoModelPermissions,)
     queryset = Tent.objects.all()
     filterset_class = TentFilter
-    ordering_fields = ['name']
+    ordering_fields = ['name', 'archived']
 
 # TODO
 # 4. Filtering for all APIs.
 # 5. Ordering for all APIs.
+# 6. Fix the StayReservation/FoodReservation Validator
+# 7. Fix User APIs
 # 8. Daily Cash

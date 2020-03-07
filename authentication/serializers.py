@@ -19,14 +19,13 @@ class CampTokenSerializer(TokenObtainPairSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    first_name = serializers.CharField(write_only=True)
+    first_name = serializers.CharField()
     last_name = serializers.CharField(write_only=True)
-    email = serializers.EmailField(read_only=True)
-    name = serializers.CharField(source='full_name', read_only=True)
+    email = serializers.EmailField()
     role = serializers.CharField(read_only=True)
     phone_number = serializers.CharField(max_length=128, required=False)
 
     class Meta:
         model = User
-        fields = ('id', 'name', 'first_name', 'phone_number', 'last_name',
+        fields = ('id', 'first_name', 'phone_number', 'last_name',
                   'role', 'email', 'is_active')

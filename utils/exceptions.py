@@ -3,6 +3,8 @@ from rest_framework.views import exception_handler
 
 def camp_exception_handler(exc, context):
     response = exception_handler(exc, context)
+    if not response:
+        return response
     errors = response.data
     detail_error = errors.pop('detail', None)
     response.data = {}
