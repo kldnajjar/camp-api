@@ -42,5 +42,4 @@ class TentModelViewSet(ArchivableMixin, ModelViewSet):
 # TODO
 # 2. Make Validation Error with a single format.
 # 3. Make Pagination single format.
-# 4. Add users by Business Owner only.
 # 8. Daily Cash
