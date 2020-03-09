@@ -110,3 +110,19 @@ class User(AbstractUser):
             return None
         else:
             return role
+
+    @role.setter
+    def role(self, value):
+        group = None
+        if not value:
+            return
+        elif isinstance(value, Group):
+            group = value
+        elif isinstance(value, str):
+            group = Group.objects.filter(name=value).first()
+            if not group:
+                return
+        if not group:
+            return
+        self.groups.clear()
+        self.groups.add(group)
