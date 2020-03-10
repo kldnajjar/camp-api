@@ -1,9 +1,11 @@
 from django_filters import rest_framework as filters
 
 from camp.models import Tent, Activity, MealType, Food, TentType
+from utils.filters import FilterDefaultValuesMixin
 
 
-class TentTypeFilter(filters.FilterSet):
+class TentTypeFilter(FilterDefaultValuesMixin, filters.FilterSet):
+    defaults = {'archived': False}
     name = filters.CharFilter('name', 'icontains')
 
     class Meta:
@@ -11,7 +13,8 @@ class TentTypeFilter(filters.FilterSet):
         fields = ['id', 'name', 'archived', 'disabled']
 
 
-class FoodFilter(filters.FilterSet):
+class FoodFilter(FilterDefaultValuesMixin, filters.FilterSet):
+    defaults = {'archived': False}
     name = filters.CharFilter('name', 'icontains')
 
     class Meta:
@@ -19,7 +22,8 @@ class FoodFilter(filters.FilterSet):
         fields = ['id', 'name', 'archived', 'disabled']
 
 
-class MealTypeFilter(filters.FilterSet):
+class MealTypeFilter(FilterDefaultValuesMixin, filters.FilterSet):
+    defaults = {'archived': False}
     name = filters.CharFilter('name', 'icontains')
 
     class Meta:
@@ -27,7 +31,8 @@ class MealTypeFilter(filters.FilterSet):
         fields = ['id', 'name', 'archived', 'disabled']
 
 
-class ActivityFilter(filters.FilterSet):
+class ActivityFilter(FilterDefaultValuesMixin, filters.FilterSet):
+    defaults = {'archived': False}
     name = filters.CharFilter('name', 'icontains')
 
     class Meta:
@@ -35,7 +40,8 @@ class ActivityFilter(filters.FilterSet):
         fields = ['id', 'name', 'archived', 'disabled']
 
 
-class TentFilter(filters.FilterSet):
+class TentFilter(FilterDefaultValuesMixin, filters.FilterSet):
+    defaults = {'archived': False}
     name = filters.CharFilter('name', 'icontains')
 
     class Meta:

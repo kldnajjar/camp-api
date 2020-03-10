@@ -1,9 +1,11 @@
 from django_filters import rest_framework as filters
 
 from bookings.models import Company, StayType, StayReservation
+from utils.filters import FilterDefaultValuesMixin
 
 
-class CompanyFilter(filters.FilterSet):
+class CompanyFilter(FilterDefaultValuesMixin, filters.FilterSet):
+    defaults = {'archived': False}
     name = filters.CharFilter('name', 'icontains')
 
     class Meta:
@@ -11,7 +13,8 @@ class CompanyFilter(filters.FilterSet):
         fields = ['name', 'email', 'phone_number', 'archived']
 
 
-class StayTypeFilter(filters.FilterSet):
+class StayTypeFilter(FilterDefaultValuesMixin, filters.FilterSet):
+    defaults = {'archived': False}
     name = filters.CharFilter('name', 'contains')
 
     class Meta:
