@@ -1,7 +1,7 @@
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.viewsets import ModelViewSet
 
-from bookings.filters import CompanyFilter, StayTypeFilter, StayReservationFilter
+from bookings.filters import CompanyFilter, StayTypeFilter, StayReservationFilter, FoodReservationFilter
 from bookings.models import FoodReservation, StayReservation, StayType, Company
 from bookings.serializers import FoodReservationSerializer, \
     StayReservationSerializer, CompanySerializer, StayTypeSerializer
@@ -35,3 +35,4 @@ class FoodReservationModelViewSet(ModelViewSet):
     queryset = FoodReservation.objects.all()
     serializer_class = FoodReservationSerializer
     permission_classes = (DjangoModelPermissions,)
+    filterset_class = FoodReservationFilter

@@ -1,3 +1,9 @@
+import re
+
+from django_filters import ChoiceFilter
+from django_filters.conf import settings
+
+
 class FilterDefaultValuesMixin:
     # Key-Value Dict for setting default values
     defaults = {}
@@ -11,7 +17,10 @@ class FilterDefaultValuesMixin:
     # Sets the default values to the received data.
     def _set_defaults(self, data):
         unset_filters = set(self.base_filters.keys()).difference(set(data.keys()))
-        for k, v in self.defaults.items():
-            if k in unset_filters:
-                data[k] = v
+        for key in self.defaults.keys():
+            if key in unset_filters:
+                if isinstance(self.defaults[key], list):
+                    data.setlist(key, self.defaults[key])
+                else:
+                    data[key] = self.defaults[key]
         return data

@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from bookings.models import Company, StayType, StayReservation
+from bookings.models import Company, StayType, StayReservation, FoodReservation, Reservation
 from utils.filters import FilterDefaultValuesMixin
 
 
@@ -22,7 +22,8 @@ class StayTypeFilter(FilterDefaultValuesMixin, filters.FilterSet):
         fields = ['name', 'archived', 'disabled']
 
 
-class StayReservationFilter(filters.FilterSet):
+class StayReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
+    defaults = {'status': ['booked', 'confirmed']}
     reserved_from__gte = filters.DateFilter('reserved_from', 'gte')
     reserved_to__lte = filters.DateFilter('reserved_to', 'lte')
     reservation_number = filters.CharFilter('reservation_number', 'icontains')
@@ -30,10 +31,33 @@ class StayReservationFilter(filters.FilterSet):
     contact_number = filters.CharFilter('contact_number', 'icontains')
     contact_email = filters.CharFilter('contact_email', 'icontains')
     company = filters.CharFilter('company__name', 'icontains')
+    status = filters.MultipleChoiceFilter('status', choices=Reservation.STATUS.choices)
 
     class Meta:
         model = StayReservation
         fields = ['reserved_from', 'reserved_from__gte',
                   'reserved_to', 'reserved_to__lte', 'stay_type',
                   'status', 'reservation_number', 'contact_name',
-                  'contact_number', 'contact_email', 'company', 'company_id']
+                  'contact_number', 'contact_email', 'company', 'company_id',
+                  'reservation_type']
+
+
+class FoodReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
+    defaults = {'status': ['booked', 'confirmed']}
+    reservation_date__lte = filters.DateFilter('reservation_date', 'lte')
+    reservation_date__gte = filters.DateFilter('reservation_date', 'gte')
+    reservation_number = filters.CharFilter('reservation_number', 'icontains')
+    contact_name = filters.CharFilter('contact_name', 'icontains')
+    contact_number = filters.CharFilter('contact_number', 'icontains')
+    contact_email = filters.CharFilter('contact_email', 'icontains')
+    company = filters.CharFilter('company__name', 'icontains')
+    meal_type = filters.CharFilter('meal_type__name', 'icontains')
+    status = filters.MultipleChoiceFilter('status', choices=Reservation.STATUS.choices)
+
+    class Meta:
+        model = FoodReservation
+        fields = ['reservation_date', 'reservation_date__gte',
+                  'reservation_date__lte', 'status', 'reservation_number',
+                  'contact_name', 'contact_number', 'contact_email',
+                  'company', 'company_id', 'meal_type', 'meal_type_id',
+                  'reservation_type']

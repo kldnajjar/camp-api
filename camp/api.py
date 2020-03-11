@@ -48,7 +48,6 @@ class TentModelViewSet(ArchivableMixin, ModelViewSet):
     ordering_fields = ['name', 'archived']
 
 # TODO
-# 4. Filtering for all APIs.
 # 5. Ordering for all APIs.
 # 8. Daily Cash
 # 9. Booking.com integration (HUGE and IMPORTANT).
