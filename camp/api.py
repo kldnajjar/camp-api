@@ -50,6 +50,5 @@ class TentModelViewSet(ArchivableMixin, ModelViewSet):
 # TODO
 # 4. Filtering for all APIs.
 # 5. Ordering for all APIs.
-# 6. Fix the StayReservation/FoodReservation Validator
 # 8. Daily Cash
 # 9. Booking.com integration (HUGE and IMPORTANT).
