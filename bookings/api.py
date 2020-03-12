@@ -13,7 +13,7 @@ class StayTypeModelViewSet(ModelViewSet):
     serializer_class = StayTypeSerializer
     permission_classes = (DjangoModelPermissions,)
     filterset_class = StayTypeFilter
-    ordering_fields = ['name', 'disabled', 'archived']
+    ordering_fields = '__all__'
 
 
 class CompanyModelViewSet(ArchivableMixin, ModelViewSet):
@@ -21,7 +21,7 @@ class CompanyModelViewSet(ArchivableMixin, ModelViewSet):
     serializer_class = CompanySerializer
     permission_classes = (DjangoModelPermissions,)
     filterset_class = CompanyFilter
-    ordering_fields = ['name', 'archived']
+    ordering_fields = '__all__'
 
 
 class StayReservationModelViewSet(ModelViewSet):
@@ -29,6 +29,8 @@ class StayReservationModelViewSet(ModelViewSet):
     serializer_class = StayReservationSerializer
     permission_classes = (DjangoModelPermissions,)
     filterset_class = StayReservationFilter
+    ordering_fields = '__all__'
+    ordering = ['-reserved_to']
 
 
 class FoodReservationModelViewSet(ModelViewSet):
@@ -36,3 +38,5 @@ class FoodReservationModelViewSet(ModelViewSet):
     serializer_class = FoodReservationSerializer
     permission_classes = (DjangoModelPermissions,)
     filterset_class = FoodReservationFilter
+    ordering_fields = '__all__'
+    ordering = ['-reservation_date']

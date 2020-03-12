@@ -1,9 +1,3 @@
-import re
-
-from django_filters import ChoiceFilter
-from django_filters.conf import settings
-
-
 class FilterDefaultValuesMixin:
     # Key-Value Dict for setting default values
     defaults = {}
