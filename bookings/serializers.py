@@ -36,7 +36,6 @@ class StayReservationSerializer(serializers.ModelSerializer):
     activities_ids = serializers.PrimaryKeyRelatedField(
         source='activities',
         many=True,
-        write_only=True,
         required=False,
         queryset=Activity.objects.all()
     )
@@ -194,7 +193,6 @@ class FoodReservationSerializer(serializers.ModelSerializer):
     food_ids = serializers.PrimaryKeyRelatedField(
         source='food',
         many=True,
-        write_only=True,
         queryset=Food.objects.all()
     )
     food = FoodSerializer(
