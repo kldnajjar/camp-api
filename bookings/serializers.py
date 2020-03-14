@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 
 from bookings.models import StayType, StayReservation, FoodReservation, Company, Reservation
 from camp.models import Tent, Activity, MealType, Food
-from camp.serializers import TentSerializer
+from camp.serializers import TentSerializer, FoodSerializer, ActivitySerializer
 from utils.helpers import date_in_the_past
 
 
@@ -40,8 +40,8 @@ class StayReservationSerializer(serializers.ModelSerializer):
         required=False,
         queryset=Activity.objects.all()
     )
-    activities = serializers.SerializerMethodField(
-        method_name='get_activities_names',
+    activities = ActivitySerializer(
+        many=True,
         read_only=True
     )
     price = serializers.DecimalField(
@@ -73,9 +73,6 @@ class StayReservationSerializer(serializers.ModelSerializer):
     reservation_type = serializers.ChoiceField(
         choices=Reservation.TYPE.choices
     )
-
-    def get_activities_names(self, instance):
-        return instance.activities.values_list('name', flat=True)
 
     def create(self, validated_data):
         tent = validated_data['tent']
@@ -200,13 +197,10 @@ class FoodReservationSerializer(serializers.ModelSerializer):
         write_only=True,
         queryset=Food.objects.all()
     )
-    food = serializers.SerializerMethodField(
-        'get_food_names',
+    food = FoodSerializer(
+        many=True,
         read_only=True
     )
-
-    def get_food_names(self, instance):
-        return instance.food.values_list('name', flat=True)
 
     def create(self, validated_data):
         reservation_date = validated_data['reservation_date']
