@@ -47,7 +47,8 @@ class StayReservationSerializer(serializers.ModelSerializer):
     price = serializers.DecimalField(
         max_digits=20,
         decimal_places=2,
-        min_value=1
+        min_value=1,
+        required=False
     )
     company = CompanySerializer(
         many=False,
@@ -178,7 +179,8 @@ class FoodReservationSerializer(serializers.ModelSerializer):
     price = serializers.DecimalField(
         max_digits=20,
         decimal_places=2,
-        min_value=1
+        min_value=1,
+        required=False
     )
     reservation_type = serializers.ChoiceField(
         choices=Reservation.TYPE.choices

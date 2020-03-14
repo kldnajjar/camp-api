@@ -29,8 +29,8 @@ class Reservation(models.Model):
         company = Choice('company', _("Company"))
 
     contact_name = models.CharField(max_length=50)
-    contact_number = models.CharField(max_length=128)
-    contact_email = models.EmailField()
+    contact_number = models.CharField(max_length=128, null=True)
+    contact_email = models.EmailField(null=True)
     company = models.ForeignKey(
         Company,
         on_delete=models.SET_NULL,
@@ -56,7 +56,8 @@ class Reservation(models.Model):
     )
     price = models.DecimalField(
         max_digits=20,
-        decimal_places=2
+        decimal_places=2,
+        null=True
     )
     notes = models.TextField(null=True, blank=True)
     reservation_number = models.CharField(max_length=50, null=True, blank=True)
