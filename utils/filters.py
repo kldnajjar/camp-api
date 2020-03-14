@@ -1,3 +1,7 @@
+from django.db.models.functions import Lower
+from rest_framework.filters import OrderingFilter
+
+
 class FilterDefaultValuesMixin:
     # Key-Value Dict for setting default values
     defaults = {}
@@ -18,3 +22,20 @@ class FilterDefaultValuesMixin:
                 else:
                     data[key] = self.defaults[key]
         return data
+
+
+class CaseInsensitiveOrderingFilter(OrderingFilter):
+    def filter_queryset(self, request, queryset, view):
+        ordering = self.get_ordering(request, queryset, view)
+
+        if ordering:
+            case_insensitive_ordering = []
+            for field in ordering:
+                case_insensitive_ordering.append(
+                    Lower(field[1:]).desc()
+                    if field.startswith('-')
+                    else Lower(field).asc()
+                )
+            return queryset.order_by(*case_insensitive_ordering)
+
+        return queryset

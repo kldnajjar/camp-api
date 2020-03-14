@@ -1,3 +1,5 @@
+from django.db.models.functions import Lower
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.viewsets import ModelViewSet
 
@@ -5,6 +7,7 @@ from camp.filters import TentFilter, TentTypeFilter, FoodFilter, MealTypeFilter,
 from camp.models import Food, MealType, Activity, Tent, TentType
 from camp.serializers import TentSerializer, FoodSerializer, \
     MealTypeSerializer, ActivitySerializer, TentTypeSerializer
+from utils.filters import CaseInsensitiveOrderingFilter
 from utils.viewsets import ArchivableMixin
 
 
@@ -44,6 +47,7 @@ class TentModelViewSet(ArchivableMixin, ModelViewSet):
     serializer_class = TentSerializer
     permission_classes = (DjangoModelPermissions,)
     queryset = Tent.objects.all()
+    filter_backends = [DjangoFilterBackend, CaseInsensitiveOrderingFilter]
     filterset_class = TentFilter
     ordering_fields = '__all__'
 

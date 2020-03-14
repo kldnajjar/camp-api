@@ -21,9 +21,7 @@ class Activity(TypesBase):
     pass
 
 
-class Tent(models.Model):
-    name = models.CharField(max_length=100)
-    archived = models.BooleanField(default=False, null=False)
+class Tent(TypesBase):
     tent_type = models.ForeignKey(TentType, on_delete=models.PROTECT)
     capacity = models.PositiveIntegerField(
         validators=[
