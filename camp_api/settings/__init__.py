@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'authentication',
     'camp',
     'bookings',
+    'transactions',
     'django_filters',
 ]
 

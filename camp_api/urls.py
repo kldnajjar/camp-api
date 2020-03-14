@@ -27,5 +27,6 @@ urlpatterns = [
     path('auth/', include('authentication.urls')),
     path('', include('camp.urls')),
     path('', include('bookings.urls')),
+    path('', include('transactions.urls')),
 ]
 urlpatterns += router.urls
