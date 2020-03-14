@@ -26,7 +26,6 @@ class StayReservationSerializer(serializers.ModelSerializer):
     tent_id = serializers.PrimaryKeyRelatedField(
         source='tent',
         required=True,
-        write_only=True,
         queryset=Tent.objects.all()
     )
     tent = TentSerializer(
@@ -62,7 +61,6 @@ class StayReservationSerializer(serializers.ModelSerializer):
     )
     stay_type_id = serializers.PrimaryKeyRelatedField(
         source='stay_type',
-        write_only=True,
         queryset=StayType.objects.all()
     )
     stay_type = serializers.CharField(
@@ -188,7 +186,6 @@ class FoodReservationSerializer(serializers.ModelSerializer):
     meal_type_id = serializers.PrimaryKeyRelatedField(
         source='meal_type',
         queryset=MealType.objects.all(),
-        write_only=True
     )
     food_ids = serializers.PrimaryKeyRelatedField(
         source='food',
