@@ -28,9 +28,9 @@ class Reservation(models.Model):
         individual = Choice('individual', _("Individual"))
         company = Choice('company', _("Company"))
 
-    contact_name = models.CharField(max_length=50)
-    contact_number = models.CharField(max_length=128, null=True)
-    contact_email = models.EmailField(null=True)
+    contact_name = models.CharField(max_length=50, null=True, blank=True)
+    contact_number = models.CharField(max_length=128, null=True, blank=True)
+    contact_email = models.EmailField(null=True, blank=True)
     company = models.ForeignKey(
         Company,
         on_delete=models.SET_NULL,

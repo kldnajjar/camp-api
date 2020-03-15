@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 
 from bookings.models import StayType, StayReservation, FoodReservation, Company, Reservation
 from camp.models import Tent, Activity, MealType, Food
-from camp.serializers import TentSerializer, FoodSerializer, ActivitySerializer
+from camp.serializers import TentSerializer, FoodSerializer
 from utils.helpers import date_in_the_past
 
 
@@ -38,19 +38,11 @@ class StayReservationSerializer(serializers.ModelSerializer):
         required=False,
         queryset=Activity.objects.all()
     )
-    activities = ActivitySerializer(
-        many=True,
-        read_only=True
-    )
     price = serializers.DecimalField(
         max_digits=20,
         decimal_places=2,
         min_value=1,
         required=False
-    )
-    company = CompanySerializer(
-        many=False,
-        read_only=True
     )
     company_id = serializers.PrimaryKeyRelatedField(
         source='company',
@@ -70,8 +62,12 @@ class StayReservationSerializer(serializers.ModelSerializer):
     reservation_type = serializers.ChoiceField(
         choices=Reservation.TYPE.choices
     )
+    contact_name = serializers.CharField(required=False)
+    contact_number = serializers.CharField(required=False)
+    contact_email = serializers.EmailField(required=False)
 
     def create(self, validated_data):
+        validation = {}
         tent = validated_data['tent']
         guests_count = validated_data['guests_count']
         date_from = validated_data['reserved_from']
@@ -80,14 +76,21 @@ class StayReservationSerializer(serializers.ModelSerializer):
         company = validated_data.get('company', None)
         company_id = company.id if company else None
         res_number = validated_data.get('reservation_number', None)
-        self._check_tent_capacity(tent, guests_count)
-        self._check_reservation_dates_are_not_in_the_past(date_from, date_to)
-        self._reservation_dates_are_not_valid(date_from, date_to)
-        self._tent_is_reserved_in_date_range(tent, date_from, date_to)
-        self._check_reservation_number_if_company(res_type, company_id, res_number)
+        contact_name = validated_data.get('contact_name', None)
+        validation = self._check_tent_capacity(tent, guests_count, validation_details=validation)
+        validation = self._check_reservation_dates_are_not_in_the_past(date_from, date_to,
+                                                                       validation_details=validation)
+        validation = self._reservation_dates_are_not_valid(date_from, date_to, validation_details=validation)
+        validation = self._tent_is_reserved_in_date_range(tent, date_from, date_to, validation_details=validation)
+        validation = self._check_reservation_number_if_company(res_type, company_id, res_number,
+                                                               validation_details=validation)
+        validation = self._check_individual_reservation_details(res_type, contact_name, validation_details=validation)
+        if validation:
+            raise ValidationError(validation)
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
+        validation = {}
         tent = validated_data.get('tent', None) or instance.tent
         guests_count = validated_data.get('guests_count', None) or instance.guests_count
         date_from = validated_data.get('reserved_from', None)
@@ -96,61 +99,69 @@ class StayReservationSerializer(serializers.ModelSerializer):
         company = validated_data.get('company', None) or instance.company
         company_id = company.id if company else None
         res_number = validated_data.get('reservation_number', None) or instance.reservation_number
+        contact_name = validated_data.get('contact_name', None) or instance.contact_name
 
-        self._check_tent_capacity(tent, guests_count)
+        validation = self._check_tent_capacity(tent, guests_count)
         if (date_from or date_to) and tent:
             date_from = instance.reserved_from if not date_from else date_from
             date_to = instance.reserved_to if not date_to else date_to
-            self._check_reservation_dates_are_not_in_the_past(date_from, date_to)
-            self._reservation_dates_are_not_valid(date_from, date_to)
-            self._tent_is_reserved_in_date_range(tent, date_from, date_to, instance.id)
+            validation = self._check_reservation_dates_are_not_in_the_past(date_from, date_to)
+            validation = self._reservation_dates_are_not_valid(date_from, date_to)
+            validation = self._tent_is_reserved_in_date_range(tent, date_from, date_to, instance.id)
         if res_type == Reservation.TYPE.individual and company:
             validated_data['company'] = None
             validated_data['reservation_number'] = None
-        self._check_reservation_number_if_company(res_type, company_id, res_number)
+        validation = self._check_reservation_number_if_company(res_type, company_id, res_number)
+        validation = self._check_individual_reservation_details(res_type, contact_name)
+        if validation:
+            raise ValidationError(validation)
         return super().update(instance, validated_data)
 
-    def _check_tent_capacity(self, tent, guests_count):
+    def _check_tent_capacity(self, tent, guests_count, **kwargs):
+        validation = kwargs.pop('validation_details', {})
         if tent.capacity < guests_count:
-            raise ValidationError({
-                'guests_count': _("Guests count exceeds tent's capacity.")
-            })
+            validation['guests_count'] = _("Guests count exceeds tent's capacity.")
+        return validation
 
-    def _reservation_dates_are_not_valid(self, date_from, date_to):
+    def _reservation_dates_are_not_valid(self, date_from, date_to, **kwargs):
+        validation = kwargs.pop('validation_details', {})
         if date_to < date_from:
-            raise ValidationError({
-                'reserved_to': _("Reserved to date can't be before reserved from date.")
-            })
+            validation['reserved_to'] = _("Reserved to date can't be before reserved from date.")
+        return validation
 
-    def _check_reservation_dates_are_not_in_the_past(self, date_from, date_to):
-        validation = {}
+    def _check_reservation_dates_are_not_in_the_past(self, date_from, date_to, **kwargs):
+        validation = kwargs.pop('validation_details', {})
         if date_in_the_past(date_from):
             validation['reserved_from'] = _('The date you are reserving from can\'t be in the past.')
         if date_in_the_past(date_to):
             validation['reserved_to'] = _('The date you are reserving to can\'t be in the past.')
-        if validation:
-            raise ValidationError(validation)
+        return validation
 
-    def _check_reservation_number_if_company(self, res_type, company_id, reservation_number):
-        validation = {}
+    def _check_reservation_number_if_company(self, res_type, company_id, reservation_number, **kwargs):
+        validation = kwargs.pop('validation_details', {})
         if res_type == Reservation.TYPE.company and not reservation_number:
             validation['reservation_number'] = _("Company reservation can't be done without a reservation number.")
         if res_type == Reservation.TYPE.company and not company_id:
             validation['company_id'] = _("Company reservation can't be done without a company.")
-        if validation:
-            raise ValidationError(validation)
+        return validation
 
-    def _tent_is_reserved_in_date_range(self, tent, date_from, date_to, exclude_reservation_id=None):
+    def _tent_is_reserved_in_date_range(self, tent, date_from, date_to, exclude_reservation_id=None, **kwargs):
+        validation = kwargs.pop('validation_details', {})
         is_reserved = self.Meta.model.objects.filter(tent=tent).exclude(
-            Q(status=[StayReservation.STATUS.cancelled]) |
+            Q(status__in=[StayReservation.STATUS.cancelled]) |
             Q(reserved_from__gte=date_to) |
             Q(reserved_to__lte=date_from) |
             Q(pk=exclude_reservation_id)
         ).exists()
         if is_reserved:
-            raise ValidationError({
-                'tent_id': _("Tent is reserved in the specified date range.")
-            })
+            validation['tent_id'] = _("Tent is reserved in the specified date range.")
+        return validation
+
+    def _check_individual_reservation_details(self, res_type, contact_name, **kwargs):
+        validation = kwargs.pop('validation_details', {})
+        if res_type == Reservation.TYPE.individual and not contact_name:
+            validation['contact_name'] = _("Contact name is required for individual reservations.")
+        return validation
 
     class Meta:
         model = StayReservation
@@ -159,10 +170,6 @@ class StayReservationSerializer(serializers.ModelSerializer):
 
 # noinspection PyMethodMayBeStatic
 class FoodReservationSerializer(serializers.ModelSerializer):
-    company = CompanySerializer(
-        many=False,
-        read_only=True
-    )
     company_id = serializers.PrimaryKeyRelatedField(
         source='company',
         queryset=Company.objects.all(),
@@ -190,55 +197,97 @@ class FoodReservationSerializer(serializers.ModelSerializer):
     food_ids = serializers.PrimaryKeyRelatedField(
         source='food',
         many=True,
+        required=True,
         queryset=Food.objects.all()
     )
     food = FoodSerializer(
         many=True,
         read_only=True
     )
+    contact_name = serializers.CharField(required=False)
+    contact_number = serializers.CharField(required=False)
+    contact_email = serializers.EmailField(required=False)
 
     def create(self, validated_data):
+        validation = {}
         reservation_date = validated_data['reservation_date']
         res_type = validated_data['reservation_type']
         res_number = validated_data.get('reservation_number', None)
+        contact_name = validated_data.get('contact_name', None)
         company = validated_data.get('company', None)
         company_id = company.id if company else None
         if res_type == Reservation.TYPE.individual:
             validated_data['company'] = None
             validated_data['reservation_number'] = None
-        self._check_reservation_date_not_in_the_past(reservation_date)
-        self._check_reservation_number_if_company(res_type, company_id, res_number)
+        validation = self._check_reservation_date_not_in_the_past(
+            reservation_date,
+            validation_details=validation
+        )
+        validation = self._check_reservation_number_if_company(
+            res_type,
+            company_id,
+            res_number,
+            validation_details=validation
+        )
+        validation = self._check_individual_reservation_details(
+            res_type,
+            contact_name,
+            validation_details=validation
+        )
+        if validation:
+            raise ValidationError(validation)
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
+        validation = {}
         reservation_date = validated_data.get('reservation_date', None)
         res_type = validated_data.get('reservation_type', None) or instance.reservation_type
-        res_number = validated_data.get('reservation_number', None)
+        res_number = validated_data.get('reservation_number', None) or instance.reservation_number
+        contact_name = validated_data.get('contact_name', None) or instance.contact_name
         company = validated_data.get('company', None) or instance.company
         company_id = company.id if company else None
         if reservation_date:
-            self._check_reservation_date_not_in_the_past(reservation_date)
+            validation = self._check_reservation_date_not_in_the_past(
+                reservation_date,
+                validation_details=validation
+            )
         if res_type == Reservation.TYPE.individual and company:
             validated_data['company'] = None
             validated_data['reservation_number'] = None
-        self._check_reservation_number_if_company(res_type, company_id, res_number)
-        return super().update(instance, validated_data)
-
-    def _check_reservation_date_not_in_the_past(self, date_from):
-        validation = {}
-        if date_in_the_past(date_from):
-            validation['reservation_date'] = _('Reservation date can\'t be in the past.')
+        validation = self._check_reservation_number_if_company(
+            res_type,
+            company_id,
+            res_number,
+            validation_details=validation
+        )
+        validation = self._check_individual_reservation_details(
+            res_type,
+            contact_name,
+            validation_details=validation
+        )
         if validation:
             raise ValidationError(validation)
+        return super().update(instance, validated_data)
 
-    def _check_reservation_number_if_company(self, res_type, company_id, reservation_number):
-        validation = {}
+    def _check_reservation_date_not_in_the_past(self, date_from, **kwargs):
+        validation = kwargs.pop('validation_details', {})
+        if date_in_the_past(date_from):
+            validation['reservation_date'] = _('Reservation date can\'t be in the past.')
+        return validation
+
+    def _check_reservation_number_if_company(self, res_type, company_id, reservation_number, **kwargs):
+        validation = kwargs.pop('validation_details', {})
         if res_type == Reservation.TYPE.company and not reservation_number:
             validation['reservation_number'] = _("Company reservation can't be done without a reservation number.")
         if res_type == Reservation.TYPE.company and not company_id:
             validation['company_id'] = _("Company reservation can't be done without a company.")
-        if validation:
-            raise ValidationError(validation)
+        return validation
+
+    def _check_individual_reservation_details(self, res_type, contact_name, **kwargs):
+        validation = kwargs.pop('validation_details', {})
+        if res_type == Reservation.TYPE.individual and not contact_name:
+            validation['contact_name'] = _("Contact name is required for individual reservations.")
+        return validation
 
     class Meta:
         model = FoodReservation

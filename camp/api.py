@@ -1,4 +1,3 @@
-from django.db.models.functions import Lower
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.viewsets import ModelViewSet
@@ -56,5 +55,5 @@ class TentModelViewSet(ArchivableMixin, ModelViewSet):
     ordering_fields = '__all__'
 
 # TODO
-# 8. Daily Cash
+# 8. Daily Cash (90%) -- Payment data aggregation left for daily cash page.
 # 9. Booking.com integration (HUGE and IMPORTANT).
