@@ -10,7 +10,7 @@ from utils.filters import CaseInsensitiveOrderingFilter
 from utils.viewsets import ArchivableMixin
 
 
-class StayTypeModelViewSet(ModelViewSet):
+class StayTypeModelViewSet(ArchivableMixin, ModelViewSet):
     queryset = StayType.objects.all()
     serializer_class = StayTypeSerializer
     permission_classes = (DjangoModelPermissions,)

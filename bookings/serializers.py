@@ -51,10 +51,6 @@ class StayReservationSerializer(serializers.ModelSerializer):
         source='stay_type',
         queryset=StayType.objects.all()
     )
-    stay_type = serializers.CharField(
-        source='stay_type.name',
-        read_only=True
-    )
     reservation_type = serializers.ChoiceField(
         choices=Reservation.TYPE.choices
     )
@@ -164,7 +160,7 @@ class StayReservationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StayReservation
-        exclude = ('activities',)
+        exclude = ('activities', 'tent', 'stay_type')
 
 
 # noinspection PyMethodMayBeStatic
