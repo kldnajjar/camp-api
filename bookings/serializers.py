@@ -28,10 +28,6 @@ class StayReservationSerializer(serializers.ModelSerializer):
         required=True,
         queryset=Tent.objects.all()
     )
-    tent = TentSerializer(
-        many=False,
-        read_only=True,
-    )
     activities_ids = serializers.PrimaryKeyRelatedField(
         source='activities',
         many=True,
@@ -105,14 +101,17 @@ class StayReservationSerializer(serializers.ModelSerializer):
         if (date_from or date_to) and tent:
             date_from = instance.reserved_from if not date_from else date_from
             date_to = instance.reserved_to if not date_to else date_to
-            validation = self._check_reservation_dates_are_not_in_the_past(date_from, date_to)
-            validation = self._reservation_dates_are_not_valid(date_from, date_to)
-            validation = self._tent_is_reserved_in_date_range(tent, date_from, date_to, instance.id)
+            validation = self._check_reservation_dates_are_not_in_the_past(date_from, date_to,
+                                                                           validation_details=validation)
+            validation = self._reservation_dates_are_not_valid(date_from, date_to, validation_details=validation)
+            validation = self._tent_is_reserved_in_date_range(tent, date_from, date_to, instance.id,
+                                                              validation_details=validation)
         if res_type == Reservation.TYPE.individual and company:
             validated_data['company'] = None
             validated_data['reservation_number'] = None
-        validation = self._check_reservation_number_if_company(res_type, company_id, res_number)
-        validation = self._check_individual_reservation_details(res_type, contact_name)
+        validation = self._check_reservation_number_if_company(res_type, company_id, res_number,
+                                                               validation_details=validation)
+        validation = self._check_individual_reservation_details(res_type, contact_name, validation_details=validation)
         if validation:
             raise ValidationError(validation)
         return super().update(instance, validated_data)
@@ -165,7 +164,7 @@ class StayReservationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StayReservation
-        fields = '__all__'
+        exclude = ('activities',)
 
 
 # noinspection PyMethodMayBeStatic
@@ -199,10 +198,6 @@ class FoodReservationSerializer(serializers.ModelSerializer):
         many=True,
         required=True,
         queryset=Food.objects.all()
-    )
-    food = FoodSerializer(
-        many=True,
-        read_only=True
     )
     contact_name = serializers.CharField(required=False)
     contact_number = serializers.CharField(required=False)
@@ -291,4 +286,4 @@ class FoodReservationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FoodReservation
-        fields = '__all__'
+        exclude = ('food',)

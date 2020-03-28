@@ -1,3 +1,5 @@
+import re
+
 from django_filters import rest_framework as filters
 
 from bookings.models import Company, StayType, StayReservation, FoodReservation, Reservation
@@ -31,17 +33,20 @@ class StayReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
     contact_name = filters.CharFilter('contact_name', 'icontains')
     contact_number = filters.CharFilter('contact_number', 'icontains')
     contact_email = filters.CharFilter('contact_email', 'icontains')
-    company = filters.CharFilter('company__name', 'icontains')
     status = filters.MultipleChoiceFilter('status', choices=Reservation.STATUS.choices)
-    tent = filters.NumberFilter('tent_id')
+    activities_ids = filters.CharFilter(method='activities_filter')
+
+    def activities_filter(self, queryset, name, value):
+        value = re.split(r'\s*,\s*', value) if isinstance(value, str) else value
+        return queryset.filter(activities__id__in=value)
 
     class Meta:
         model = StayReservation
         fields = ['document_number', 'reserved_from', 'reserved_from__gte',
-                  'tent', 'price', 'reserved_to', 'reserved_to__lte', 'stay_type',
+                  'tent_id', 'price', 'reserved_to', 'reserved_to__lte', 'stay_type',
                   'status', 'reservation_number', 'contact_name', 'contact_number',
-                  'contact_email', 'company', 'company_id', 'guests_count',
-                  'created_at', 'reservation_type']
+                  'contact_email', 'company_id', 'guests_count',
+                  'created_at', 'reservation_type', 'activities_ids']
 
 
 class FoodReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
@@ -54,13 +59,17 @@ class FoodReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
     contact_number = filters.CharFilter('contact_number', 'icontains')
     contact_email = filters.CharFilter('contact_email', 'icontains')
     company = filters.CharFilter('company__name', 'icontains')
-    meal_type = filters.CharFilter('meal_type__name', 'icontains')
     status = filters.MultipleChoiceFilter('status', choices=Reservation.STATUS.choices)
+    food_ids = filters.CharFilter(method='food_filter')
+
+    def food_filter(self, qs, name, value):
+        value = re.split(r'\s*,\s*', value) if isinstance(value, str) else value
+        return qs.filter(food__id__in=value)
 
     class Meta:
         model = FoodReservation
         fields = ['document_number', 'reservation_date', 'reservation_date__gte',
                   'reservation_date__lte', 'status', 'reservation_number',
                   'contact_name', 'contact_number', 'contact_email',
-                  'company', 'company_id', 'meal_type', 'meal_type_id',
+                  'company', 'company_id', 'meal_type_id', 'food_ids',
                   'reservation_type', 'created_at', 'guests_count', 'price']
