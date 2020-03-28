@@ -46,6 +46,7 @@ class StayReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
 
 class FoodReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
     defaults = {'status': ['booked', 'confirmed']}
+    document_number = filters.NumberFilter('id')
     reservation_date__lte = filters.DateFilter('reservation_date', 'lte')
     reservation_date__gte = filters.DateFilter('reservation_date', 'gte')
     reservation_number = filters.CharFilter('reservation_number', 'icontains')
@@ -58,8 +59,8 @@ class FoodReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
 
     class Meta:
         model = FoodReservation
-        fields = ['reservation_date', 'reservation_date__gte',
+        fields = ['document_number', 'reservation_date', 'reservation_date__gte',
                   'reservation_date__lte', 'status', 'reservation_number',
                   'contact_name', 'contact_number', 'contact_email',
                   'company', 'company_id', 'meal_type', 'meal_type_id',
-                  'reservation_type']
+                  'reservation_type', 'created_at', 'guests_count', 'price']
