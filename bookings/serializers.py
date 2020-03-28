@@ -181,10 +181,6 @@ class FoodReservationSerializer(serializers.ModelSerializer):
     reservation_type = serializers.ChoiceField(
         choices=Reservation.TYPE.choices
     )
-    meal_type = serializers.CharField(
-        source='meal_type.name',
-        read_only=True
-    )
     meal_type_id = serializers.PrimaryKeyRelatedField(
         source='meal_type',
         queryset=MealType.objects.all(),
@@ -282,4 +278,4 @@ class FoodReservationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FoodReservation
-        exclude = ('food',)
+        exclude = ('food', 'meal_type',)
