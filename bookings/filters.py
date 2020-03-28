@@ -43,7 +43,7 @@ class StayReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
     class Meta:
         model = StayReservation
         fields = ['document_number', 'reserved_from', 'reserved_from__gte',
-                  'tent_id', 'price', 'reserved_to', 'reserved_to__lte', 'stay_type',
+                  'tent_id', 'price', 'reserved_to', 'reserved_to__lte', 'stay_type_id',
                   'status', 'reservation_number', 'contact_name', 'contact_number',
                   'contact_email', 'company_id', 'guests_count',
                   'created_at', 'reservation_type', 'activities_ids']
