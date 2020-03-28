@@ -30,6 +30,7 @@ class StayReservationSerializer(serializers.ModelSerializer):
     )
     activities_ids = serializers.PrimaryKeyRelatedField(
         source='activities',
+        allow_null=True,
         many=True,
         required=False,
         queryset=Activity.objects.all()
@@ -54,9 +55,9 @@ class StayReservationSerializer(serializers.ModelSerializer):
     reservation_type = serializers.ChoiceField(
         choices=Reservation.TYPE.choices
     )
-    contact_name = serializers.CharField(required=False)
-    contact_number = serializers.CharField(required=False)
-    contact_email = serializers.EmailField(required=False)
+    contact_name = serializers.CharField(required=False, allow_null=True)
+    contact_number = serializers.CharField(required=False, allow_null=True)
+    contact_email = serializers.EmailField(required=False, allow_null=True)
 
     def create(self, validated_data):
         validation = {}
@@ -191,9 +192,9 @@ class FoodReservationSerializer(serializers.ModelSerializer):
         required=True,
         queryset=Food.objects.all()
     )
-    contact_name = serializers.CharField(required=False)
-    contact_number = serializers.CharField(required=False)
-    contact_email = serializers.EmailField(required=False)
+    contact_name = serializers.CharField(required=False, allow_null=True)
+    contact_number = serializers.CharField(required=False, allow_null=True)
+    contact_email = serializers.EmailField(required=False, allow_null=True)
 
     def create(self, validated_data):
         validation = {}
