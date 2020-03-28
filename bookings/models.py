@@ -61,8 +61,8 @@ class Reservation(models.Model):
     )
     notes = models.TextField(null=True, blank=True)
     reservation_number = models.CharField(max_length=50, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
 
     class Meta:
         abstract = True

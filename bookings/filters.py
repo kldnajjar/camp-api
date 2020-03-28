@@ -24,6 +24,7 @@ class StayTypeFilter(FilterDefaultValuesMixin, filters.FilterSet):
 
 class StayReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
     defaults = {'status': ['booked', 'confirmed']}
+    document_number = filters.NumberFilter('id')
     reserved_from__gte = filters.DateFilter('reserved_from', 'gte')
     reserved_to__lte = filters.DateFilter('reserved_to', 'lte')
     reservation_number = filters.CharFilter('reservation_number', 'icontains')
@@ -32,14 +33,15 @@ class StayReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
     contact_email = filters.CharFilter('contact_email', 'icontains')
     company = filters.CharFilter('company__name', 'icontains')
     status = filters.MultipleChoiceFilter('status', choices=Reservation.STATUS.choices)
+    tent = filters.NumberFilter('tent_id')
 
     class Meta:
         model = StayReservation
-        fields = ['reserved_from', 'reserved_from__gte',
-                  'reserved_to', 'reserved_to__lte', 'stay_type',
-                  'status', 'reservation_number', 'contact_name',
-                  'contact_number', 'contact_email', 'company', 'company_id',
-                  'reservation_type']
+        fields = ['document_number', 'reserved_from', 'reserved_from__gte',
+                  'tent', 'price', 'reserved_to', 'reserved_to__lte', 'stay_type',
+                  'status', 'reservation_number', 'contact_name', 'contact_number',
+                  'contact_email', 'company', 'company_id', 'guests_count',
+                  'created_at', 'reservation_type']
 
 
 class FoodReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
