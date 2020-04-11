@@ -48,6 +48,7 @@ class StayReservationSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
+    company = CompanySerializer(many=False, read_only=True)
     stay_type_id = serializers.PrimaryKeyRelatedField(
         source='stay_type',
         queryset=StayType.objects.all()
@@ -173,6 +174,7 @@ class FoodReservationSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
+    company = CompanySerializer(many=False, read_only=True)
     price = serializers.DecimalField(
         max_digits=20,
         decimal_places=2,
