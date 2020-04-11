@@ -23,18 +23,6 @@ class Payment(models.Model):
         decimal_places=2,
         default=0
     )
-    stay_reservation = models.ForeignKey(
-        StayReservation,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-    food_reservation = models.ForeignKey(
-        FoodReservation,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
     date = models.DateField()
     note = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
