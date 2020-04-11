@@ -99,11 +99,14 @@ class StayReservationSerializer(serializers.ModelSerializer):
         if (date_from or date_to) and tent:
             date_from = instance.reserved_from if not date_from else date_from
             date_to = instance.reserved_to if not date_to else date_to
-            validation = self._check_reservation_dates_are_not_in_the_past(date_from, date_to,
-                                                                           validation_details=validation)
+            # validation = self._check_reservation_dates_are_not_in_the_past(
+            #     date_from, date_to, validation_details=validation
+            # )
             validation = self._reservation_dates_are_not_valid(date_from, date_to, validation_details=validation)
-            validation = self._tent_is_reserved_in_date_range(tent, date_from, date_to, instance.id,
-                                                              validation_details=validation)
+            # validation = self._tent_is_reserved_in_date_range(
+            #     tent, date_from, date_to, instance.id,
+            #     validation_details=validation
+            # )
         if res_type == Reservation.TYPE.individual and company:
             validated_data['company'] = None
             validated_data['reservation_number'] = None
@@ -236,11 +239,11 @@ class FoodReservationSerializer(serializers.ModelSerializer):
         contact_name = validated_data.get('contact_name', None) or instance.contact_name
         company = validated_data.get('company', None) or instance.company
         company_id = company.id if company else None
-        if reservation_date:
-            validation = self._check_reservation_date_not_in_the_past(
-                reservation_date,
-                validation_details=validation
-            )
+        # if reservation_date:
+        #     validation = self._check_reservation_date_not_in_the_past(
+        #         reservation_date,
+        #         validation_details=validation
+        #     )
         if res_type == Reservation.TYPE.individual and company:
             validated_data['company'] = None
             validated_data['reservation_number'] = None
