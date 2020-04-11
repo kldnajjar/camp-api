@@ -25,7 +25,7 @@ class StayTypeFilter(FilterDefaultValuesMixin, filters.FilterSet):
 
 
 class StayReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
-    defaults = {'status': ['booked', 'confirmed']}
+    # defaults = {'status': ['booked', 'confirmed']}
     document_number = filters.NumberFilter('id')
     reserved_from__gte = filters.DateFilter('reserved_from', 'gte')
     reserved_to__lte = filters.DateFilter('reserved_to', 'lte')
@@ -50,7 +50,7 @@ class StayReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
 
 
 class FoodReservationFilter(FilterDefaultValuesMixin, filters.FilterSet):
-    defaults = {'status': ['booked', 'confirmed']}
+    # defaults = {'status': ['booked', 'confirmed']}
     document_number = filters.NumberFilter('id')
     reservation_date__lte = filters.DateFilter('reservation_date', 'lte')
     reservation_date__gte = filters.DateFilter('reservation_date', 'gte')
